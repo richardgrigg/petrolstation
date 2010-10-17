@@ -4,7 +4,8 @@ import java.util.*;
 
 public class PetrolStation {
 
-    private Map<FuelType, FuelStock> availableFuel = new HashMap<FuelType, FuelStock>();
+    private Map<FuelType, FuelTank> availableFuel = new HashMap<FuelType, FuelTank>();
+    private static final Double DEFAULT_DEPOT_TANK_CAPACITY = 10000000D;
 
     public PetrolStation(Double unleaded, Double diesel, Double premium) {
         addFuelFromDeliveryLorry(FuelType.UNLEADED, unleaded);
@@ -13,38 +14,36 @@ public class PetrolStation {
     }
 
     public void addFuelFromDeliveryLorry(FuelType fuelType, Double fuel) {
-        if( isFuelTypeAvailable(fuelType)) {
+        if( isFuelTypeServed(fuelType)) {
             availableFuel.get(fuelType).increment(fuel);
         } else {
-            availableFuel.put(fuelType, new FuelStock(fuel));
+            availableFuel.put(fuelType, new FuelTank(fuel, DEFAULT_DEPOT_TANK_CAPACITY));
         }
     }
 
     public Double getFuelTypeInventory(FuelType fuelType) {
-        if(isFuelTypeAvailable(fuelType)) {
-            return availableFuel.get(fuelType).getValue();
+        if(isFuelTypeServed(fuelType)) {
+            return availableFuel.get(fuelType).getCurrentCapacity();
         }
         return 0D;
     }
 
-    public void removeFuelFromStock(FuelType fuelType, Double fuel) {
-        if(isFuelTypeAvailable(fuelType)) {
-            availableFuel.get(fuelType).decrement(fuel);
-        }
+    public Double removeFuelFromStock(FuelType fuelType, Double fuel) {
+        return availableFuel.get(fuelType).decrement(fuel);
     }
 
-    private boolean isFuelTypeAvailable(FuelType fuelType) {
+    public boolean isFuelTypeServed(FuelType fuelType) {
         return availableFuel.containsKey(fuelType);
     }
 
-    public boolean hasFuel(FuelType fuelType) {
+    public boolean hasFuelInTankOfThisType(FuelType fuelType) {
         return (getFuelTypeInventory(fuelType) > 0D);
     }
 
 
     public String toString() {
         String output = "";
-        Map<FuelType, FuelStock> fuelAvailable = this.availableFuel;
+        Map<FuelType, FuelTank> fuelAvailable = this.availableFuel;
         return fuelAvailable.toString();
         
     }
