@@ -8,12 +8,12 @@ public class Vehicle {
 
     public Vehicle() {
         this.fuelType = FuelType.UNLEADED;
-        fuelTank = new FuelTank(0D, DEFAULT_MAXIMUM_FUEL_TANK_CAPACITY);
+        setFuelTank(new FuelTank(0D, DEFAULT_MAXIMUM_FUEL_TANK_CAPACITY));
     }
     
     public Vehicle(FuelType fuelType, Double maximumFuelTankCapacity, Double currentFuelTankCapacity) {
         this.fuelType = fuelType;
-        fuelTank = new FuelTank(currentFuelTankCapacity, maximumFuelTankCapacity);
+        setFuelTank(new FuelTank(currentFuelTankCapacity, maximumFuelTankCapacity));
     }
 
     public void drive() {
@@ -31,21 +31,21 @@ public class Vehicle {
     public void accelerate() {
     }
 
-    public Double addFuel(Double fuelToAdd) {
-        return fuelTank.increment(fuelToAdd);
-    }
-
-    public Double useFuel(Double fuelUsed) {
-        return fuelTank.decrement(fuelUsed);
-    }
-
     public FuelType getFuelType() {
         return fuelType;
     }
 
     public String toString() {
         return "Fuel:             " + fuelType.toString() + "\n" +
-               "Current Capacity: " + this.fuelTank.getCurrentCapacity().toString() + "\n" +
-               "Max Capacity:     " + this.fuelTank.getMaximumCapacity().toString();
+               "Current Capacity: " + this.getFuelTank().getCurrentCapacity().toString() + "\n" +
+               "Max Capacity:     " + this.getFuelTank().getMaximumCapacity().toString();
+    }
+
+    public FuelTank getFuelTank() {
+        return fuelTank;
+    }
+
+    public void setFuelTank(FuelTank fuelTank) {
+        this.fuelTank = fuelTank;
     }
 }

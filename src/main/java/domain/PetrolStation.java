@@ -5,47 +5,57 @@ import java.util.*;
 public class PetrolStation {
 
     private Map<FuelType, FuelTank> availableFuel = new HashMap<FuelType, FuelTank>();
-    private static final Double DEFAULT_DEPOT_TANK_CAPACITY = 10000000D;
 
-    public PetrolStation(Double unleaded, Double diesel, Double premium) {
-        addFuelFromDeliveryLorry(FuelType.UNLEADED, unleaded);
-        addFuelFromDeliveryLorry(FuelType.DIESEL, unleaded);
-        addFuelFromDeliveryLorry(FuelType.PREMIUM, unleaded);
+
+    public PetrolStation(Double maxFuelTankCapacity) {
+        initialiseAvailableFuelWithAllFuelTypes(maxFuelTankCapacity);
     }
 
-    public void addFuelFromDeliveryLorry(FuelType fuelType, Double fuel) {
+    public void addFuel(FuelType fuelType, Double fuel) {
         if( isFuelTypeServed(fuelType)) {
-            availableFuel.get(fuelType).increment(fuel);
-        } else {
-            availableFuel.put(fuelType, new FuelTank(fuel, DEFAULT_DEPOT_TANK_CAPACITY));
+            getAvailableFuel().get(fuelType).increment(fuel);
         }
-    }
-
-    public Double getFuelTypeInventory(FuelType fuelType) {
-        if(isFuelTypeServed(fuelType)) {
-            return availableFuel.get(fuelType).getCurrentCapacity();
-        }
-        return 0D;
-    }
-
-    public Double removeFuelFromStock(FuelType fuelType, Double fuel) {
-        return availableFuel.get(fuelType).decrement(fuel);
     }
 
     public boolean isFuelTypeServed(FuelType fuelType) {
-        return availableFuel.containsKey(fuelType);
+        return getAvailableFuel().containsKey(fuelType);
+    }
+
+    public Double getFuelTypeInventory(FuelType fuelType) {
+        Double fuelAvailable = 0D;
+
+        if( isFuelTypeServed(fuelType)) {
+            fuelAvailable = getAvailableFuel().get(fuelType).getCurrentCapacity();
+        }
+        return fuelAvailable;
+    }
+
+    public Double removeFuelFromStock(FuelType fuelType, Double fuel) {
+        Double fuelRemovedFromStock = 0D;
+
+        if( isFuelTypeServed(fuelType)) {
+            fuelRemovedFromStock = getAvailableFuel().get(fuelType).decrement(fuel);
+        }
+        return fuelRemovedFromStock;
     }
 
     public boolean hasFuelInTankOfThisType(FuelType fuelType) {
         return (getFuelTypeInventory(fuelType) > 0D);
     }
 
-
     public String toString() {
-        String output = "";
-        Map<FuelType, FuelTank> fuelAvailable = this.availableFuel;
-        return fuelAvailable.toString();
-        
+        return this.getAvailableFuel().toString();
+    }
+
+    public Map<FuelType, FuelTank> getAvailableFuel() {
+        return availableFuel;
+    }
+
+    private void initialiseAvailableFuelWithAllFuelTypes(Double maximumCapacity) {
+        List<FuelType> fuelTypes = Arrays.asList(FuelType.values());
+        for (Iterator iterator = fuelTypes.iterator(); iterator.hasNext();) {
+            availableFuel.put( (FuelType) iterator.next(), new FuelTank(0D, maximumCapacity) );
+        }
     }
 
 }

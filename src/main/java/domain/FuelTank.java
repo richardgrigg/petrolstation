@@ -4,29 +4,31 @@ public class FuelTank {
     private final Double maximumCapacity;
     private Double currentCapacity = 0D;
 
-    public FuelTank(Double currentCapacity, Double maximumCapacity) {
-        this.currentCapacity = currentCapacity;
-        this.maximumCapacity = maximumCapacity;
-    }
 
     public Double increment(Double value) {
-        if((this.currentCapacity + value) >= getMaximumCapacity()) {
-            Double fuelAdded = getMaximumCapacity() - this.currentCapacity;
-            this.currentCapacity = getMaximumCapacity();
+        if((this.getCurrentCapacity() + value) >= this.getMaximumCapacity()) {
+            Double fuelAdded = maximumCapacity - currentCapacity;
+            currentCapacity = maximumCapacity;
             return fuelAdded;
         }
-        this.currentCapacity += value;
+        currentCapacity += value;
         return value;
     }
 
     public Double decrement(Double value) {
-        if(this.currentCapacity - value < 0) {
-            Double fuelUsed = this.currentCapacity;
-            this.currentCapacity = 0D;
+
+        if(currentCapacity - value < 0) {
+            Double fuelUsed = currentCapacity;
+            currentCapacity = 0D;
             return fuelUsed ;
         }
-        this.currentCapacity -= value;
+        currentCapacity -= value;
         return value;
+    }
+    
+    public FuelTank(Double currentCapacity, Double maximumCapacity) {
+        this.currentCapacity = currentCapacity;
+        this.maximumCapacity = maximumCapacity;
     }
 
     public Double getCurrentCapacity() {
